@@ -4,6 +4,8 @@ Rails.application.routes.draw do
                        path_names: { sign_in: :login }
 
     resource :user, only: [:show, :update]
+
+    resources :profiles, param: :username, only: [:show]
   end
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
