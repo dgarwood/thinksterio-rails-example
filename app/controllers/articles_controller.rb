@@ -7,7 +7,7 @@ class ArticlesController < ApplicationController
     @articles = @articles.tagged_with(params[:tag]) if params[:tag].present?
     @articles = @articles.authored_by(params[:author]) if params[:author].present?
     @articles = @articles.favorited_by(params[:favorited]) if params[:favorited].present?
-    
+
     @articles_count = @articles.count
     @articles = @articles.order(created_at: :desc).offset(params[:offset] || 0).limit(params[:limit] || 20)
   end
@@ -48,6 +48,14 @@ class ArticlesController < ApplicationController
     else
       render json: { errors: { article: ['not owned by user'] } }, status: :forbidden
     end
+  end
+
+  def feed
+    @articles = Article.includes(:user).where(user: current_user.following_users)
+    @articles_count = @articles.count
+    @articles = @articles.order(created_at: :desc).offset(params[:offset] || 0).limit(params[:limit] || 20)
+
+    render :index
   end
 
   private
