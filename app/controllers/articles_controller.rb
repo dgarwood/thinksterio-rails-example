@@ -3,6 +3,8 @@ class ArticlesController < ApplicationController
 
   def index
     @articles = Article.all.includes(:user)
+
+    @articles = @articles.tagged_with(params[:tag]) if params[:tag].present?
     @articles = @articles.authored_by(params[:author]) if params[:author].present?
     @articles_count = @articles.count
     @articles = @articles.order(created_at: :desc).offset(params[:offset] || 0).limit(params[:limit] || 20)
@@ -49,6 +51,6 @@ class ArticlesController < ApplicationController
   private
 
   def article_params
-    params.require(:article).permit(:title, :body, :description)
+    params.require(:article).permit(:title, :body, :description, tag_list: [])
   end
 end
