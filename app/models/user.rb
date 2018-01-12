@@ -10,6 +10,8 @@ class User < ActiveRecord::Base
             allow_blank: false,
             format: { with: /\A[a-zA-Z0-9]+\z/ }
 
+  has_many :articles, dependent: :destroy
+
   def generate_jwt
     JWT.encode({ id: id,
                 exp: 60.days.from_now.to_i },

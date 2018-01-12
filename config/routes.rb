@@ -6,6 +6,8 @@ Rails.application.routes.draw do
     resource :user, only: [:show, :update]
 
     resources :profiles, param: :username, only: [:show]
+
+    resources :articles, param: :slug, except: [:edit, :new]
   end
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
