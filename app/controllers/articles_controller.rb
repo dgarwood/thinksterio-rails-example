@@ -1,11 +1,11 @@
 class ArticlesController < ApplicationController
-  before_action :authenticate_user!
+  before_action :authenticate_user!, except: [:index, :show]
 
   def index
     @articles = Article.all.includes(:user)
     @articles = @articles.authored_by(params[:author]) if params[:author].present?
     @articles_count = @articles.count
-    @articles = @aricles.order(created_at: :desc).offset(params[:offset] || 0).limit(params[:limit] || 20)
+    @articles = @articles.order(created_at: :desc).offset(params[:offset] || 0).limit(params[:limit] || 20)
   end
 
   def create
@@ -39,8 +39,8 @@ class ArticlesController < ApplicationController
 
     if @article.user_id == @current_user_id
       @article.destroy
-
       render json: {}
+
     else
       render json: { errors: { article: ['not owned by user'] } }, status: :forbidden
     end
